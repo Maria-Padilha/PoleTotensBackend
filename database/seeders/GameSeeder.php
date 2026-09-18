@@ -14,6 +14,7 @@ class GameSeeder extends Seeder
 
         $games = [
             ['name' => 'Quiz', 'slug' => 'quiz', 'description' => 'Perguntas e respostas personalizadas para o evento.'],
+            ['name' => 'Verdadeiro ou Falso', 'slug' => 'verdadeiro-ou-falso', 'description' => 'Afirmações que os convidados devem marcar como verdadeiras ou falsas.'],
             ['name' => 'Roleta de Brindes', 'slug' => 'roleta-de-brindes', 'description' => 'Roleta sorteando brindes entre os participantes.'],
             ['name' => 'Jogo da Memória', 'slug' => 'jogo-da-memoria', 'description' => 'Clássico jogo da memória com imagens personalizadas.'],
             ['name' => 'Caça-Palavras', 'slug' => 'caca-palavras', 'description' => 'Caça-palavras temático do evento.'],

@@ -41,6 +41,11 @@ class UpdateGameInstanceRequest extends FormRequest
             'config.questions.*.options' => ['required', 'array', 'min:2'],
             'config.questions.*.options.*' => ['required', 'string', 'max:255'],
             'config.questions.*.correct_index' => ['required', 'integer', 'min:0'],
+            'config.statements' => ['nullable', 'array'],
+            'config.statements.*.id' => ['nullable', 'string'],
+            'config.statements.*.text' => ['required', 'string', 'max:500'],
+            'config.statements.*.image_url' => ['nullable', 'string', 'max:2048'],
+            'config.statements.*.correct_answer' => ['required', 'boolean'],
         ];
     }
 }
