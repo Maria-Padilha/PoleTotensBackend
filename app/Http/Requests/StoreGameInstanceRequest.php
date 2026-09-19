@@ -52,6 +52,14 @@ class StoreGameInstanceRequest extends FormRequest
             'config.statements.*.text' => ['required', 'string', 'max:500'],
             'config.statements.*.image_url' => ['nullable', 'string', 'max:2048'],
             'config.statements.*.correct_answer' => ['required', 'boolean'],
+            'config.words' => ['nullable', 'array'],
+            'config.words.*.id' => ['nullable', 'string'],
+            'config.words.*.word' => ['required', 'string', 'max:255'],
+            'config.words.*.hint' => ['nullable', 'string', 'max:500'],
+            'config.words.*.image_url' => ['nullable', 'string', 'max:2048'],
+            'config.cards' => ['nullable', 'array'],
+            'config.cards.*.id' => ['nullable', 'string'],
+            'config.cards.*.image_url' => ['required', 'string', 'max:2048'],
         ];
     }
 }
