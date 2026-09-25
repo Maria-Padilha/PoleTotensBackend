@@ -8,7 +8,9 @@ class Recap extends Model
 {
     protected $fillable = [
         'event_id',
+        'token',
         'data',
+        'music_url',
         'file_path',
         'generated_at',
     ];

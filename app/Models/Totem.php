@@ -10,6 +10,7 @@ class Totem extends Model
         'user_id',
         'name',
         'slug',
+        'public_token',
         'location',
         'password',
         'status',

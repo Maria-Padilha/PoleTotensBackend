@@ -5,7 +5,12 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\EventTotemController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GameInstanceController;
+use App\Http\Controllers\Api\GamePlayController;
+use App\Http\Controllers\Api\GamePlayPhotoController;
 use App\Http\Controllers\Api\PreviewController;
+use App\Http\Controllers\Api\PublicPlayController;
+use App\Http\Controllers\Api\PublicTotemController;
+use App\Http\Controllers\Api\RecapController;
 use App\Http\Controllers\Api\TotemController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\UserController;
@@ -15,6 +20,23 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/preview/{token}', [PreviewController::class, 'show']);
 Route::post('/preview/{token}/approve', [PreviewController::class, 'approve']);
+
+Route::get('/play/{token}', [PublicPlayController::class, 'show']);
+Route::get('/play/{token}/history', [PublicPlayController::class, 'history']);
+Route::get('/play/{token}/ranking', [PublicPlayController::class, 'ranking']);
+Route::post('/play/{token}/plays', [GamePlayController::class, 'store']);
+Route::get('/recap/{token}', [RecapController::class, 'showPublic']);
+
+Route::get('/totem/{token}', [PublicTotemController::class, 'show']);
+Route::post('/totem/{token}/unlock', [PublicTotemController::class, 'unlock']);
+Route::post('/totem/{token}/events/{eventId}/unlock', [PublicTotemController::class, 'unlockEvent']);
+Route::get('/totem/{token}/events/{eventId}/names', [PublicTotemController::class, 'names']);
+Route::get('/totem/{token}/events/{eventId}/ranking', [PublicTotemController::class, 'ranking']);
+Route::get('/totem/{token}/events/{eventId}/attract', [PublicTotemController::class, 'attract']);
+
+Route::post('/plays/{gamePlay}/photo-token', [GamePlayPhotoController::class, 'requestToken']);
+Route::get('/foto/{token}', [GamePlayPhotoController::class, 'show']);
+Route::post('/foto/{token}', [GamePlayPhotoController::class, 'upload']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -29,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('events', EventController::class);
     Route::apiResource('totems', TotemController::class);
+    Route::post('/totems/{totem}/public-link', [TotemController::class, 'generatePublicLink']);
 
     Route::get('/events/{event}/totems', [EventTotemController::class, 'index']);
     Route::post('/events/{event}/totems', [EventTotemController::class, 'store']);
@@ -45,6 +68,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/game-instances/{gameInstance}', [GameInstanceController::class, 'update']);
     Route::delete('/game-instances/{gameInstance}', [GameInstanceController::class, 'destroy']);
     Route::post('/game-instances/{gameInstance}/preview', [GameInstanceController::class, 'generatePreview']);
+    Route::post('/game-instances/{gameInstance}/public-link', [GameInstanceController::class, 'generatePublicLink']);
+
+    Route::get('/events/{event}/recap', [RecapController::class, 'show']);
+    Route::post('/events/{event}/recap/generate', [RecapController::class, 'generate']);
 
     Route::post('/uploads', [UploadController::class, 'store']);
 });

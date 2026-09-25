@@ -14,6 +14,7 @@ class TotemResource extends JsonResource
             'user_id' => $this->user_id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'public_token' => $this->public_token,
             'location' => $this->location,
             'status' => $this->status,
             'last_seen_at' => $this->last_seen_at,

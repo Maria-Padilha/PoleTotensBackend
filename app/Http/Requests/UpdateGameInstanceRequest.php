@@ -33,6 +33,7 @@ class UpdateGameInstanceRequest extends FormRequest
             'config.win_threshold' => ['nullable', 'integer', 'min:0', 'max:100'],
             'config.win_message' => ['nullable', 'string', 'max:255'],
             'config.lose_message' => ['nullable', 'string', 'max:255'],
+            'config.neutral_message' => ['nullable', 'string', 'max:255'],
             'config.sound_enabled' => ['nullable', 'boolean'],
             'config.questions' => ['nullable', 'array'],
             'config.questions.*.id' => ['nullable', 'string'],
@@ -54,6 +55,13 @@ class UpdateGameInstanceRequest extends FormRequest
             'config.cards' => ['nullable', 'array'],
             'config.cards.*.id' => ['nullable', 'string'],
             'config.cards.*.image_url' => ['required', 'string', 'max:2048'],
+            'config.prizes' => ['nullable', 'array'],
+            'config.prizes.*.id' => ['nullable', 'string'],
+            'config.prizes.*.label' => ['required', 'string', 'max:60'],
+            'config.prizes.*.weight' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'config.prizes.*.color' => ['nullable', 'string', 'max:20'],
+            'config.prizes.*.outcome_type' => ['nullable', 'string', Rule::in(['positive', 'negative', 'neutral'])],
+            'config.prizes.*.message' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

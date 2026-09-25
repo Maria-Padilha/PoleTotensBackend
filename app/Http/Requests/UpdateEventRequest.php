@@ -21,6 +21,8 @@ class UpdateEventRequest extends FormRequest
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'status' => ['sometimes', 'in:draft,scheduled,active,finished,canceled'],
+            'access_password' => ['nullable', 'string', 'min:4', 'max:100'],
+            'clear_access_password' => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -21,6 +21,7 @@ class StoreEventRequest extends FormRequest
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'status' => ['nullable', 'in:draft,scheduled,active,finished,canceled'],
+            'access_password' => ['nullable', 'string', 'min:4', 'max:100'],
         ];
     }
 }

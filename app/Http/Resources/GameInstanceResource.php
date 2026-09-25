@@ -24,6 +24,7 @@ class GameInstanceResource extends JsonResource
             'preview_opened_at' => $this->preview_opened_at,
             'preview_expired' => $this->isPreviewExpired(),
             'approved_at' => $this->approved_at,
+            'public_token' => $this->public_token,
             'game' => $this->whenLoaded('userGame', fn () => new GameResource($this->userGame->game)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

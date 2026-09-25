@@ -13,7 +13,7 @@ class UploadController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'file' => ['required', 'image', 'max:8192'],
+            'file' => ['required', 'file', 'mimes:jpeg,jpg,png,gif,webp,mp3,mpga,wav', 'max:20480'],
             'event_id' => ['nullable', 'integer', 'exists:events,id'],
             'game_slug' => ['nullable', 'string', 'max:100'],
             'folder' => ['nullable', 'string', 'max:50'],

@@ -93,4 +93,20 @@ class TotemController extends Controller
 
         return response()->json(status: 204);
     }
+
+    // Link fixo que fica aberto no navegador do totem (kiosk) — gera uma vez
+    // só, diferente do preview de jogo (que expira).
+    public function generatePublicLink(Totem $totem)
+    {
+        $this->authorize('update', $totem);
+
+        if (! $totem->public_token) {
+            $totem->update(['public_token' => Str::random(40)]);
+        }
+
+        return response()->json([
+            'public_token' => $totem->public_token,
+            'public_path' => "/totem/{$totem->public_token}",
+        ]);
+    }
 }

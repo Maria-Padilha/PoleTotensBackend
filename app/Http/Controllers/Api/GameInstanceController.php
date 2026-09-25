@@ -85,6 +85,22 @@ class GameInstanceController extends Controller
         ]);
     }
 
+    // Diferente do preview: gera uma vez só e não muda mais (é o link fixo
+    // que fica aberto no totem) — se já existir, só devolve o mesmo.
+    public function generatePublicLink(Request $request, GameInstance $gameInstance)
+    {
+        $this->authorizeInstance($request, $gameInstance);
+
+        if (! $gameInstance->public_token) {
+            $gameInstance->update(['public_token' => Str::random(40)]);
+        }
+
+        return response()->json([
+            'public_token' => $gameInstance->public_token,
+            'public_path' => "/jogar/{$gameInstance->public_token}",
+        ]);
+    }
+
     private function resolveEventTotem(Request $request, Event $event, Totem $totem): EventTotem
     {
         $user = $request->user();

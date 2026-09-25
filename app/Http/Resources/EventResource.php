@@ -20,6 +20,7 @@ class EventResource extends JsonResource
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
             'status' => $this->status,
+            'has_access_password' => filled($this->access_password),
             'totems' => TotemResource::collection($this->whenLoaded('totems')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -62,7 +62,18 @@ class EventController extends Controller
     {
         $this->authorize('update', $event);
 
-        $event->update($request->validated());
+        $data = $request->validated();
+
+        // string vazia = "não mexe na senha atual" (igual ao totem); o flag
+        // explícito é o único jeito de realmente remover a senha existente.
+        if ($request->boolean('clear_access_password')) {
+            $data['access_password'] = null;
+        } elseif (empty($data['access_password'])) {
+            unset($data['access_password']);
+        }
+        unset($data['clear_access_password']);
+
+        $event->update($data);
 
         return new EventResource($event);
     }

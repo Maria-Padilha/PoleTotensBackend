@@ -16,6 +16,7 @@ class GameInstance extends Model
         'preview_token',
         'preview_opened_at',
         'approved_at',
+        'public_token',
     ];
 
     protected function casts(): array

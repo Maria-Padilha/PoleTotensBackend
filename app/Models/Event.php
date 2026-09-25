@@ -16,6 +16,11 @@ class Event extends Model
         'starts_at',
         'ends_at',
         'status',
+        'access_password',
+    ];
+
+    protected $hidden = [
+        'access_password',
     ];
 
     protected function casts(): array
@@ -23,6 +28,7 @@ class Event extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'access_password' => 'hashed',
         ];
     }
 
