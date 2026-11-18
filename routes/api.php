@@ -1,16 +1,20 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ContactRequestController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\EventTotemController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GameInstanceController;
 use App\Http\Controllers\Api\GamePlayController;
-use App\Http\Controllers\Api\GamePlayPhotoController;
+use App\Http\Controllers\Api\KaraokeController;
+use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\PreviewController;
 use App\Http\Controllers\Api\PublicPlayController;
 use App\Http\Controllers\Api\PublicTotemController;
 use App\Http\Controllers\Api\RecapController;
+use App\Http\Controllers\Api\TargetController;
+use App\Http\Controllers\Api\TimingController;
 use App\Http\Controllers\Api\TotemController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\UserController;
@@ -18,6 +22,7 @@ use App\Http\Controllers\Api\UserGameController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/contact-requests', [ContactRequestController::class, 'store'])->middleware('throttle:5,10');
 Route::get('/preview/{token}', [PreviewController::class, 'show']);
 Route::post('/preview/{token}/approve', [PreviewController::class, 'approve']);
 
@@ -25,6 +30,10 @@ Route::get('/play/{token}', [PublicPlayController::class, 'show']);
 Route::get('/play/{token}/history', [PublicPlayController::class, 'history']);
 Route::get('/play/{token}/ranking', [PublicPlayController::class, 'ranking']);
 Route::post('/play/{token}/plays', [GamePlayController::class, 'store']);
+Route::get('/play/{token}/karaoke-ranking', [KaraokeController::class, 'ranking']);
+Route::get('/play/{token}/timing-ranking', [TimingController::class, 'ranking']);
+Route::get('/play/{token}/target-ranking', [TargetController::class, 'ranking']);
+Route::post('/play/{token}/plays/{gamePlay}/recording', [KaraokeController::class, 'uploadRecording']);
 Route::get('/recap/{token}', [RecapController::class, 'showPublic']);
 
 Route::get('/totem/{token}', [PublicTotemController::class, 'show']);
@@ -34,16 +43,13 @@ Route::get('/totem/{token}/events/{eventId}/names', [PublicTotemController::clas
 Route::get('/totem/{token}/events/{eventId}/ranking', [PublicTotemController::class, 'ranking']);
 Route::get('/totem/{token}/events/{eventId}/attract', [PublicTotemController::class, 'attract']);
 
-Route::post('/plays/{gamePlay}/photo-token', [GamePlayPhotoController::class, 'requestToken']);
-Route::get('/foto/{token}', [GamePlayPhotoController::class, 'show']);
-Route::post('/foto/{token}', [GamePlayPhotoController::class, 'upload']);
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class);
+        Route::get('/contact-requests', [ContactRequestController::class, 'index']);
         Route::post('/games', [GameController::class, 'store']);
         Route::put('/games/{game}', [GameController::class, 'update']);
         Route::delete('/games/{game}', [GameController::class, 'destroy']);
@@ -72,6 +78,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/events/{event}/recap', [RecapController::class, 'show']);
     Route::post('/events/{event}/recap/generate', [RecapController::class, 'generate']);
+
+    Route::get('/events/{event}/leads', [LeadController::class, 'index']);
+    Route::get('/events/{event}/leads/export', [LeadController::class, 'export']);
 
     Route::post('/uploads', [UploadController::class, 'store']);
 });

@@ -100,7 +100,7 @@ class PublicTotemController extends Controller
         return response()->json(['ranking' => EventRankingService::overallRanking($instanceIds)]);
     }
 
-    // Pro modo "totem parado" (attract mode): fotos recentes + o ranking de
+    // Pro modo "totem parado" (attract mode): o ranking de
     // CADA jogo separado, e por último o ranking geral do evento.
     public function attract(string $token, int $eventId)
     {
@@ -109,42 +109,67 @@ class PublicTotemController extends Controller
 
         $instanceIds = EventRankingService::instanceIdsForEvent($event);
 
-        $photos = GamePlay::with('gameInstance.userGame.game')
-            ->whereIn('game_instance_id', $instanceIds)
-            ->whereNotNull('photo_url')
-            ->latest('played_at')
-            ->take(20)
-            ->get()
-            ->map(fn (GamePlay $play) => [
-                'photo_url' => $play->photo_url,
-                'player_name' => $play->player_name,
-                'game_name' => $play->gameInstance?->userGame?->game?->name,
-                'ranking_position' => $play->ranking_position,
-            ]);
-
         $rankingsByGame = GameInstance::with('userGame.game')
             ->whereIn('id', $instanceIds)
             ->get()
             ->map(function (GameInstance $instance) {
-                $ranking = EventRankingService::rankingForInstance($instance->id);
+                $slug = $instance->userGame->game->slug;
+                $kind = match ($slug) {
+                    'karaoke' => 'karaoke',
+                    'acerte-o-tempo' => 'timing',
+                    'pare-no-alvo' => 'target',
+                    default => 'score',
+                };
+
+                $ranking = match ($kind) {
+                    'karaoke' => EventRankingService::karaokePerformances($instance->id),
+                    'timing' => $this->timingRows($instance->id),
+                    'target' => $this->targetRows($instance->id),
+                    default => EventRankingService::rankingForInstance($instance->id),
+                };
 
                 if (! $ranking) {
                     return null;
                 }
 
+                // tabela completa (sem cortar no top 5): o totem mostra todos
                 return [
                     'game_name' => $instance->title ?: $instance->userGame->game->name,
-                    'ranking' => array_slice($ranking, 0, 5),
+                    'kind' => $kind,
+                    'ranking' => $ranking,
                 ];
             })
             ->filter()
             ->values();
 
         return response()->json([
-            'photos' => $photos,
             'rankings_by_game' => $rankingsByGame,
-            'overall_ranking' => array_slice(EventRankingService::overallRanking($instanceIds), 0, 5),
+            'overall_ranking' => EventRankingService::overallRanking($instanceIds),
         ]);
+    }
+
+    // Linhas do ranking do "Acerte o Tempo" já formatadas pra tabela do totem.
+    // Linhas do ranking do "Pare no Alvo" já formatadas pra tabela do totem.
+    private function targetRows(int $instanceId): array
+    {
+        return array_map(fn ($row) => [
+            'name' => $row['name'],
+            'score' => $row['cleared'],
+            'song' => 'precisão '.$row['precision'].'%',
+            'display' => $row['cleared'].' '.($row['cleared'] === 1 ? 'nível' : 'níveis'),
+        ], EventRankingService::targetPerformances($instanceId));
+    }
+
+    private function timingRows(int $instanceId): array
+    {
+        $fmt = fn (float $n) => number_format($n, 2, ',', '');
+
+        return array_map(fn ($row) => [
+            'name' => $row['name'],
+            'score' => $row['score'],
+            'song' => $fmt($row['target']).' → '.$fmt($row['stopped']).' s',
+            'display' => '± '.$fmt($row['diff']).' s',
+        ], EventRankingService::timingPerformances($instanceId));
     }
 
     private function buildEvents(Totem $totem): array
@@ -162,6 +187,7 @@ class PublicTotemController extends Controller
                 'event_id' => $event->id,
                 'event_name' => $event->name,
                 'has_password' => $hasPassword,
+                'appearance' => $event->appearance ?: (object) [],
                 'games' => $hasPassword ? null : $this->gamesFor($eventTotem),
             ];
         })->values()->toArray();

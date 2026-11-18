@@ -10,13 +10,13 @@ class GamePlay extends Model
     protected $fillable = [
         'game_instance_id',
         'lead_id',
+        'recording_token',
+        'recording_url',
         'player_name',
         'score',
         'ranking_position',
         'metadata',
         'client_uuid',
-        'photo_token',
-        'photo_url',
         'played_at',
     ];
 

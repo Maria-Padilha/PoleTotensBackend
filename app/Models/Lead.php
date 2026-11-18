@@ -11,6 +11,7 @@ class Lead extends Model
         'name',
         'email',
         'phone',
+        'instagram',
         'extra',
         'client_uuid',
         'captured_at',

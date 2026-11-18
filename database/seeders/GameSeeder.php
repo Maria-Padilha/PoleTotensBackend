@@ -19,6 +19,9 @@ class GameSeeder extends Seeder
             ['name' => 'Caça-Palavras', 'slug' => 'caca-palavras', 'description' => 'Encontre as palavras escondidas no tabuleiro de letras.'],
             ['name' => 'Roleta', 'slug' => 'roleta-de-brindes', 'description' => 'Roleta giratória personalizável — prêmios, desafios, decisões ou o que quiser.'],
             ['name' => 'Jogo da Memória', 'slug' => 'jogo-da-memoria', 'description' => 'Encontre os pares de cartas viradas com fotos personalizadas do evento.'],
+            ['name' => 'Karaokê', 'slug' => 'karaoke', 'description' => 'Cante com a letra sincronizada, ganhe nota pela voz e dispute o ranking — com replay da apresentação.'],
+            ['name' => 'Pare no Alvo', 'slug' => 'pare-no-alvo', 'description' => 'Uma barra vai e volta: toque para parar dentro da zona verde. A cada acerto a zona diminui e a barra acelera.'],
+            ['name' => 'Acerte o Tempo', 'slug' => 'acerte-o-tempo', 'description' => 'Um tempo é sorteado e o cronômetro roda: pare exatamente nele. Ranking dos que chegaram mais perto.'],
             ['name' => 'Sorteio de Prêmios', 'slug' => 'sorteio-de-premios', 'description' => 'Sorteio de prêmios entre os participantes cadastrados.'],
         ];
 

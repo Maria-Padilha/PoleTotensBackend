@@ -56,6 +56,67 @@ class EventRankingService
         return self::overallRanking(collect([$instanceId]));
     }
 
+    // Karaokê: ranking por APRESENTAÇÃO (quem cantou 2x aparece 2x), com a música.
+    public static function karaokePerformances(int $instanceId): array
+    {
+        return GamePlay::where('game_instance_id', $instanceId)
+            ->whereNotNull('score')
+            ->whereNotNull('player_name')
+            ->orderByDesc('score')
+            ->orderBy('played_at')
+            ->get()
+            ->map(fn (GamePlay $play) => [
+                'name' => $play->player_name,
+                'score' => (int) $play->score,
+                'song' => $play->metadata['song'] ?? null,
+            ])
+            ->values()
+            ->toArray();
+    }
+
+    // "Acerte o Tempo": tentativas dos mais perto do alvo pros mais longe (empate: quem fez primeiro).
+    public static function timingPerformances(int $instanceId, ?int $limit = null): array
+    {
+        $rows = GamePlay::where('game_instance_id', $instanceId)
+            ->whereNotNull('player_name')
+            ->get()
+            ->filter(fn (GamePlay $play) => isset($play->metadata['diff'], $play->metadata['target'], $play->metadata['stopped']))
+            ->map(fn (GamePlay $play) => [
+                'id' => $play->id,
+                'name' => $play->player_name,
+                'target' => (float) $play->metadata['target'],
+                'stopped' => (float) $play->metadata['stopped'],
+                'diff' => (float) $play->metadata['diff'],
+                'score' => (int) $play->score,
+                'played_at' => $play->played_at,
+            ])
+            ->sort(fn ($a, $b) => [$a['diff'], $a['played_at']] <=> [$b['diff'], $b['played_at']])
+            ->values();
+
+        return ($limit ? $rows->take($limit) : $rows)->toArray();
+    }
+
+    // "Pare no Alvo": tentativas pelos níveis passados (empate: maior pontuação, depois quem fez primeiro).
+    public static function targetPerformances(int $instanceId, ?int $limit = null): array
+    {
+        $rows = GamePlay::where('game_instance_id', $instanceId)
+            ->whereNotNull('player_name')
+            ->get()
+            ->filter(fn (GamePlay $play) => isset($play->metadata['cleared']))
+            ->map(fn (GamePlay $play) => [
+                'id' => $play->id,
+                'name' => $play->player_name,
+                'cleared' => (int) $play->metadata['cleared'],
+                'precision' => (int) ($play->metadata['precision'] ?? 0),
+                'score' => (int) $play->score,
+                'played_at' => $play->played_at,
+            ])
+            ->sort(fn ($a, $b) => [$b['cleared'], $b['score'], $a['played_at']] <=> [$a['cleared'], $a['score'], $b['played_at']])
+            ->values();
+
+        return ($limit ? $rows->take($limit) : $rows)->toArray();
+    }
+
     public static function positionOf(array $ranking, string $playerName): ?int
     {
         $target = self::normalize($playerName);
