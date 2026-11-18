@@ -9,6 +9,7 @@ use App\Http\Resources\GameInstanceResource;
 use App\Models\Event;
 use App\Models\EventTotem;
 use App\Models\GameInstance;
+use App\Models\KaraokeSong;
 use App\Models\Totem;
 use App\Models\UserGame;
 use Illuminate\Http\Request;
@@ -45,6 +46,8 @@ class GameInstanceController extends Controller
             'position' => $eventTotem->gameInstances()->count(),
         ]);
 
+        KaraokeSong::syncFromConfig($request->user()->id, $request->validated('config.songs'));
+
         $instance->load(['eventTotem.totem', 'userGame.game']);
 
         return new GameInstanceResource($instance);
@@ -55,6 +58,8 @@ class GameInstanceController extends Controller
         $this->authorizeInstance($request, $gameInstance);
 
         $gameInstance->update($request->validated());
+
+        KaraokeSong::syncFromConfig($request->user()->id, $request->validated('config.songs'));
         $gameInstance->load(['eventTotem.totem', 'userGame.game']);
 
         return new GameInstanceResource($gameInstance);

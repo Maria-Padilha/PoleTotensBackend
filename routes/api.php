@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GameInstanceController;
 use App\Http\Controllers\Api\GamePlayController;
 use App\Http\Controllers\Api\KaraokeController;
+use App\Http\Controllers\Api\KaraokeSongController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\PreviewController;
 use App\Http\Controllers\Api\PublicPlayController;
@@ -83,4 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events/{event}/leads/export', [LeadController::class, 'export']);
 
     Route::post('/uploads', [UploadController::class, 'store']);
+
+    Route::get('/karaoke-songs', [KaraokeSongController::class, 'index']);
+    Route::post('/karaoke-songs', [KaraokeSongController::class, 'store']);
+    Route::put('/karaoke-songs/{karaokeSong}', [KaraokeSongController::class, 'update']);
+    Route::delete('/karaoke-songs/{karaokeSong}', [KaraokeSongController::class, 'destroy']);
 });
