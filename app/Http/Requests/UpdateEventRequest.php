@@ -44,6 +44,7 @@ class UpdateEventRequest extends FormRequest
             'appearance.card_radius' => ['nullable', 'in:round,soft,square'],
             'appearance.icon_size' => ['nullable', 'integer', 'between:60,180'],
             'appearance.game_name_size' => ['nullable', 'integer', 'between:60,180'],
+            'appearance.ranking_style' => ['nullable', 'in:auto,glass,accent'],
             'appearance.show_game_type' => ['nullable', 'boolean'],
             'appearance.title_glow' => ['nullable', 'boolean'],
             'appearance.fx_float' => ['nullable', 'boolean'],
