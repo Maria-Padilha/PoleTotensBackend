@@ -38,8 +38,18 @@ class UpdateEventRequest extends FormRequest
             'appearance.text_spacing' => ['nullable', 'numeric', 'between:-0.1,0.5'],
             'appearance.text_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'appearance.accent_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
-            'appearance.card_style' => ['nullable', 'in:auto,light,dark,glass,fun'],
+            'appearance.card_style' => ['nullable', 'in:auto,light,dark,glass,fun,neon,gradient'],
             'appearance.welcome_text' => ['nullable', 'string', 'max:120'],
+            'appearance.games_layout' => ['nullable', 'in:auto,list,grid2,grid3,poster'],
+            'appearance.card_radius' => ['nullable', 'in:round,soft,square'],
+            'appearance.icon_size' => ['nullable', 'integer', 'between:60,180'],
+            'appearance.game_name_size' => ['nullable', 'integer', 'between:60,180'],
+            'appearance.show_game_type' => ['nullable', 'boolean'],
+            'appearance.title_glow' => ['nullable', 'boolean'],
+            'appearance.fx_float' => ['nullable', 'boolean'],
+            'appearance.fx_shine' => ['nullable', 'boolean'],
+            'appearance.fx_glow' => ['nullable', 'boolean'],
+            'appearance.fx_particles' => ['nullable', 'in:none,bubbles,stars,confetti'],
         ];
     }
 }
